@@ -4,13 +4,12 @@ import express from "express";
 import dotenv from "dotenv";
 import { Redis } from 'ioredis';
 
-// configures dotenv to work in your application
+// Configures dotenv
 dotenv.config();
 
-// Set up web server
+// Set up web server dependencies
 const app = express();
 const PORT = process.env.PORT;
-
 app.use(express.json());
 
 // Set up Redis client
@@ -26,6 +25,8 @@ app.get("/", (request: Request, response: Response) => {
 }); 
 
 app.post("/ping", async (request: Request, response: Response) => {
+  // curl -s -X POST http://localhost:3000/ping \
+  //   -H 'Content-Type: application/json' -d '{"userId":"u1"}'
   const {userId} = request.body || {};
   if (!userId) return response.status(400).json({ error: 'userId required' });
   await redisClient.set(`presence:${userId}`, '', 'EX', 10);
